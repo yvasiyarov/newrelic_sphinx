@@ -2,15 +2,24 @@ package main
 
 import (
 	"github.com/yunge/sphinx"
-
+        "fmt"
+"time"
 //	"github.com/yvasiyarov/newrelic_platform_go"
 )
 
-type SphinxStatusData interface{}
+const (
+    MIN_PAUSE_TIME = 30
+)
+
+type SphinxStatusData map[string]string
 type MetricsDataSource struct {
 	SphinxHost        string
 	Port              int
 	ConnectionTimeout int
+
+        PreviousData SphinxStatusData
+        LastData     SphinxStatusData
+        LastUpdateTime time.Time
 }
 
 func NewMetricsDataSource(sphinxHost string, port int, connectionTimeout int) *MetricsDataSource {
@@ -26,7 +35,21 @@ func NewMetricsDataSource(sphinxHost string, port int, connectionTimeout int) *M
 }
 
 func (ds *MetricsDataSource) GetData() (*SphinxStatusData, error) {
-	ds.QueryData()
+        startTime := time.Now()
+        if startTime.Sub(ds.LastUpdateTime) > time.Second * MIN_PAUSE_TIME {
+            newData, err := ds.QueryData()
+            if err != nil {
+                return nil, err
+            }
+            
+            if ds.PreviousData == nil {
+                ds.PreviousData = newData
+            } else {
+                ds.PreviousData = ds.LastData
+            }
+            ds.LastData = newData
+        }
+        return nil, nil
 }
 
 func (ds *MetricsDataSource) QueryData() (*SphinxStatusData, error) {
@@ -45,10 +68,12 @@ func (ds *MetricsDataSource) QueryData() (*SphinxStatusData, error) {
 		return nil, err
 	}
 
+        data := make(SphinxStatusData, len(status))
 	for _, row := range status {
-		fmt.Printf("%20s:\t%s\n", row[0], row[1])
+		data[row[0]] = row[1]
 	}
-	return nil, nil
+
+	return data, nil
 }
 
 /*
@@ -89,6 +114,6 @@ func main() {
 		plugin.Verbose = true
 		plugin.Run()
 	*/
-	ds := NewMetricsDataSource("192.168.0.94", 0, 0)
+	ds := NewMetricsDataSource("web-d5.butik.ru", 0, 0)
 	ds.QueryData()
 }
