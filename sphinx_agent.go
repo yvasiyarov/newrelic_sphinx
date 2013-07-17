@@ -5,7 +5,7 @@ import (
         "fmt"
 "time"
 "strconv"
-//	"github.com/yvasiyarov/newrelic_platform_go"
+	"github.com/yvasiyarov/newrelic_platform_go"
 )
 
 const (
@@ -56,6 +56,11 @@ func (ds *MetricsDataSource) GetOriginalData(key string) (float64, float64, erro
     currentValue, ok := ds.LastData[key]
     if !ok {
         return 0, 0, fmt.Errorf("Can not get data from source \n")
+    }
+
+    //some metric calculation can be turned off by sphinx settings
+    if previousValue == "OFF" || currentValue == "OFF" {
+        return 0, 0, nil
     }
 
     previousValueConverted, err := strconv.ParseFloat(previousValue, 64)
@@ -122,46 +127,58 @@ func (ds *MetricsDataSource) QueryData() (SphinxStatusData, error) {
 	return data, nil
 }
 
-/*
 type Metrica struct {
 	Name       string
 	Units      string
 	DataKey    string
-	Datasource *MetricsDataSource
+	DataSource *MetricsDataSource
 }
 
 func (metrica *Metrica) GetName() string {
 	return metrica.Name
 }
-func (metrica *WaveMetrica) GetUnits() string {
+func (metrica *Metrica) GetUnits() string {
 	return metrica.Units
 }
-func (metrica *WaveMetrica) GetValue() (float64, error) {
-	metrica.sawtoothCounter++
-	if metrica.sawtoothCounter > metrica.sawtoothMax {
-		metrica.sawtoothCounter = 0
-	}
-	return float64(metrica.sawtoothCounter), nil
+func (metrica *Metrica) GetValue() (float64, error) {
+    return metrica.DataSource.GetData(metrica.DataKey)
 }
-*/
+
+func AddMetrcas(component newrelic_platform_go.IComponent, dataSource *MetricsDataSource) {
+    keys := []string{
+       "connections", "maxed_out", "command_search", "command_excerpt", "command_update", "command_keywords",
+       "command_persist", "command_status", "command_flushattrs", "agent_connect", "agent_retry", "queries", 
+       "dist_queries", "query_wall", "query_cpu", "dist_wall", "dist_local", "dist_wait", "query_reads", 
+       "query_readkb", "query_readtime", "avg_query_wall", "avg_query_cpu", "avg_dist_wall", "avg_dist_local", 
+       "avg_dist_wait", "avg_query_reads", "avg_query_readkb", "avg_query_readtime",
+    }
+
+    names := []string{
+       "Connections", "Maxed out", "Command search", "Command excerpt", "Command update", "Command keywords",
+       "Command persist", "Command status", "Command flushattrs", "Agent connect", "Agent retry", "Queries", 
+       "Dist queries", "Query wall", "Query cpu", "Dist wall", "Dist local", "Dist wait", "Query reads", 
+       "Query readkb", "Query readtime", "Avg query wall", "Avg query cpu", "Avg dist wall", "Avg dist local", 
+       "Avg dist wait", "Avg query reads", "Avg query readkb", "Avg query readtime",
+    }
+    for i, key := range keys {
+        m := &Metrica{
+            DataKey: key,
+            Name: names[i],
+            Units: "val/second",
+            DataSource: dataSource,
+        }
+        component.AddMetrica(m)
+    }
+}
 
 func main() {
-	/*
-		plugin := newrelic_platform_go.NewNewrelicPlugin("0.0.1", "7bceac019c7dcafae1ef95be3e3a3ff8866de246", 60)
-		component := newrelic_platform_go.NewPluginComponent("Sphinx component", "com.github.yvasiyarov.Sphinx")
-		plugin.AddComponent(component)
+        plugin := newrelic_platform_go.NewNewrelicPlugin("0.0.1", "7bceac019c7dcafae1ef95be3e3a3ff8866de246", 60)
+        component := newrelic_platform_go.NewPluginComponent("Sphinx component", "com.github.yvasiyarov.Sphinx")
+        plugin.AddComponent(component)
 
-		m := &WaveMetrica{
-			sawtoothMax:     10,
-			sawtoothCounter: 5,
-		}
-
-		component.AddMetrica(m)
-		plugin.Verbose = true
-		plugin.Run()
-	*/
 	ds := NewMetricsDataSource("web-d5.butik.ru", 0, 0)
-	v1, err := ds.GetData("command_search")
-        fmt.Printf("V:%v err: %v\n", v1, err)
-        fmt.Printf("DS %#v\n", ds)
+        AddMetrcas(component, ds)
+        
+        plugin.Harvest()
+        plugin.Harvest()
 }
