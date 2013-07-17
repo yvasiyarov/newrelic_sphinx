@@ -4,6 +4,7 @@ import (
 	"github.com/yunge/sphinx"
         "fmt"
 "time"
+"strconv"
 //	"github.com/yvasiyarov/newrelic_platform_go"
 )
 
@@ -34,12 +35,47 @@ func NewMetricsDataSource(sphinxHost string, port int, connectionTimeout int) *M
 	return ds
 }
 
-func (ds *MetricsDataSource) GetData() (*SphinxStatusData, error) {
+func (ds *MetricsDataSource) GetData(key string) (float64, error) {
+    if err := ds.CheckAndUpdateData(); err != nil {
+        return 0, err
+    }
+
+    prev, last, err := ds.GetOriginalData(key)
+
+    if err != nil {
+        return 0, err
+    }
+    return last - prev, nil
+}
+
+func (ds *MetricsDataSource) GetOriginalData(key string) (float64, float64, error) {
+    previousValue, ok := ds.PreviousData[key]
+    if !ok {
+        return 0, 0, fmt.Errorf("Can not get data from source \n")
+    }
+    currentValue, ok := ds.LastData[key]
+    if !ok {
+        return 0, 0, fmt.Errorf("Can not get data from source \n")
+    }
+
+    previousValueConverted, err := strconv.ParseFloat(previousValue, 64)
+    if err != nil {
+        return 0, 0, fmt.Errorf("Can not convert previous value of %s to int \n", key)
+    } 
+    currentValueConverted, err := strconv.ParseFloat(currentValue, 64)
+    if err != nil {
+        return 0, 0, fmt.Errorf("Can not convert current value of %s to int \n", key)
+    }
+
+    return previousValueConverted, currentValueConverted, nil  
+}
+
+func (ds *MetricsDataSource) CheckAndUpdateData() error {
         startTime := time.Now()
         if startTime.Sub(ds.LastUpdateTime) > time.Second * MIN_PAUSE_TIME {
             newData, err := ds.QueryData()
             if err != nil {
-                return nil, err
+                return err
             }
             
             if ds.PreviousData == nil {
@@ -49,10 +85,20 @@ func (ds *MetricsDataSource) GetData() (*SphinxStatusData, error) {
             }
             ds.LastData = newData
         }
-        return nil, nil
+
+        // check uptime
+        //If uptime is less then in previous run - then server were restarted
+        if prev, last, err := ds.GetOriginalData("uptime"); err != nil {
+            return err
+        } else {
+            if last < prev {
+               ds.PreviousData = ds.LastData
+            }
+        }
+        return nil
 }
 
-func (ds *MetricsDataSource) QueryData() (*SphinxStatusData, error) {
+func (ds *MetricsDataSource) QueryData() (SphinxStatusData, error) {
 	client := sphinx.NewClient().SetServer(ds.SphinxHost, ds.Port)
 
 	if ds.ConnectionTimeout != 0 {
@@ -115,5 +161,7 @@ func main() {
 		plugin.Run()
 	*/
 	ds := NewMetricsDataSource("web-d5.butik.ru", 0, 0)
-	ds.QueryData()
+	v1, err := ds.GetData("command_search")
+        fmt.Printf("V:%v err: %v\n", v1, err)
+        fmt.Printf("DS %#v\n", ds)
 }
