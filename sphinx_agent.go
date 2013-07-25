@@ -1,15 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"github.com/yunge/sphinx"
-        "fmt"
-"time"
-"strconv"
 	"github.com/yvasiyarov/newrelic_platform_go"
+	"strconv"
+	"time"
 )
 
 const (
-    MIN_PAUSE_TIME = 30
+	MIN_PAUSE_TIME = 30
 )
 
 type SphinxStatusData map[string]string
@@ -18,9 +18,9 @@ type MetricsDataSource struct {
 	Port              int
 	ConnectionTimeout int
 
-        PreviousData SphinxStatusData
-        LastData     SphinxStatusData
-        LastUpdateTime time.Time
+	PreviousData   SphinxStatusData
+	LastData       SphinxStatusData
+	LastUpdateTime time.Time
 }
 
 func NewMetricsDataSource(sphinxHost string, port int, connectionTimeout int) *MetricsDataSource {
@@ -35,73 +35,85 @@ func NewMetricsDataSource(sphinxHost string, port int, connectionTimeout int) *M
 	return ds
 }
 
-func (ds *MetricsDataSource) GetData(key string) (float64, error) {
-    if err := ds.CheckAndUpdateData(); err != nil {
-        return 0, err
-    }
+func (ds *MetricsDataSource) CheckAndGetData(key string) (float64, error) {
+	if err := ds.CheckAndUpdateData(); err != nil {
+		return 0, err
+	}
 
-    prev, last, err := ds.GetOriginalData(key)
+	prev, last, err := ds.GetOriginalData(key)
 
-    if err != nil {
-        return 0, err
-    }
-    return last - prev, nil
+	if err != nil {
+		return 0, err
+	}
+	return last - prev, nil
+}
+func (ds *MetricsDataSource) CheckAndGetLastData(key string) (float64, error) {
+	if err := ds.CheckAndUpdateData(); err != nil {
+		return 0, err
+	}
+
+	_, last, err := ds.GetOriginalData(key)
+
+	if err != nil {
+		return 0, err
+	}
+	return last, nil
 }
 
 func (ds *MetricsDataSource) GetOriginalData(key string) (float64, float64, error) {
-    previousValue, ok := ds.PreviousData[key]
-    if !ok {
-        return 0, 0, fmt.Errorf("Can not get data from source \n")
-    }
-    currentValue, ok := ds.LastData[key]
-    if !ok {
-        return 0, 0, fmt.Errorf("Can not get data from source \n")
-    }
+	previousValue, ok := ds.PreviousData[key]
+	if !ok {
+		return 0, 0, fmt.Errorf("Can not get data from source \n")
+	}
+	currentValue, ok := ds.LastData[key]
+	if !ok {
+		return 0, 0, fmt.Errorf("Can not get data from source \n")
+	}
 
-    //some metric calculation can be turned off by sphinx settings
-    if previousValue == "OFF" || currentValue == "OFF" {
-        return 0, 0, nil
-    }
+	//some metric calculation can be turned off by sphinx settings
+	if previousValue == "OFF" || currentValue == "OFF" {
+		return 0, 0, nil
+	}
 
-    previousValueConverted, err := strconv.ParseFloat(previousValue, 64)
-    if err != nil {
-        return 0, 0, fmt.Errorf("Can not convert previous value of %s to int \n", key)
-    } 
-    currentValueConverted, err := strconv.ParseFloat(currentValue, 64)
-    if err != nil {
-        return 0, 0, fmt.Errorf("Can not convert current value of %s to int \n", key)
-    }
+	previousValueConverted, err := strconv.ParseFloat(previousValue, 64)
+	if err != nil {
+		return 0, 0, fmt.Errorf("Can not convert previous value of %s to int \n", key)
+	}
+	currentValueConverted, err := strconv.ParseFloat(currentValue, 64)
+	if err != nil {
+		return 0, 0, fmt.Errorf("Can not convert current value of %s to int \n", key)
+	}
 
-    return previousValueConverted, currentValueConverted, nil  
+	return previousValueConverted, currentValueConverted, nil
 }
 
 func (ds *MetricsDataSource) CheckAndUpdateData() error {
-        startTime := time.Now()
-        if startTime.Sub(ds.LastUpdateTime) > time.Second * MIN_PAUSE_TIME {
-            newData, err := ds.QueryData()
-            if err != nil {
-                return err
-            }
-            
-            if ds.PreviousData == nil {
-                ds.PreviousData = newData
-            } else {
-                ds.PreviousData = ds.LastData
-            }
-            ds.LastData = newData
-            ds.LastUpdateTime = startTime
-        }
+	startTime := time.Now()
+	if startTime.Sub(ds.LastUpdateTime) > time.Second*MIN_PAUSE_TIME {
+		newData, err := ds.QueryData()
+		if err != nil {
+			return err
+		}
 
-        // check uptime
-        //If uptime is less then in previous run - then server were restarted
-        if prev, last, err := ds.GetOriginalData("uptime"); err != nil {
-            return err
-        } else {
-            if last < prev {
-               ds.PreviousData = ds.LastData
-            }
-        }
-        return nil
+		if ds.PreviousData == nil {
+			ds.PreviousData = newData
+		} else {
+			ds.PreviousData = ds.LastData
+		}
+		ds.LastData = newData
+		ds.LastUpdateTime = startTime
+	}
+
+	// check uptime
+	//If uptime is less then in previous run - then server were restarted
+	if prev, last, err := ds.GetOriginalData("uptime"); err != nil {
+		return err
+	} else {
+		if last < prev {
+			ds.PreviousData = ds.LastData
+		}
+	}
+	return nil
 }
 
 func (ds *MetricsDataSource) QueryData() (SphinxStatusData, error) {
@@ -120,7 +132,7 @@ func (ds *MetricsDataSource) QueryData() (SphinxStatusData, error) {
 		return nil, err
 	}
 
-        data := make(SphinxStatusData, len(status))
+	data := make(SphinxStatusData, len(status))
 	for _, row := range status {
 		data[row[0]] = row[1]
 	}
@@ -142,73 +154,91 @@ func (metrica *Metrica) GetUnits() string {
 	return metrica.Units
 }
 func (metrica *Metrica) GetValue() (float64, error) {
-    return metrica.DataSource.GetData(metrica.DataKey)
+	return metrica.DataSource.CheckAndGetData(metrica.DataKey)
+}
+
+type AvgMetrica struct {
+	Metrica
+}
+
+func (metrica *AvgMetrica) GetValue() (float64, error) {
+	return metrica.DataSource.CheckAndGetLastData(metrica.DataKey)
 }
 
 func AddMetrcas(component newrelic_platform_go.IComponent, dataSource *MetricsDataSource) {
-    metricas := []*Metrica{
-        &Metrica{
-            DataKey: "queries",
-            Name: "Queries",
-            Units: "Queries/second",
-        },
-        &Metrica{
-            DataKey: "connections",
-            Name: "Connections",
-            Units: "connections/second",
-        },
-        &Metrica{
-            DataKey: "maxed_out",
-            Name: "Maxed out",
-            Units: "connections/second",
-        },
-        &Metrica{
-            DataKey: "command_search",
-            Name: "Command search",
-            Units: "command/second",
-        },
-        &Metrica{
-            DataKey: "command_excerpt",
-            Name: "Command excerpt",
-            Units: "command/second",
-        },
-        &Metrica{
-            DataKey: "command_update",
-            Name: "Command update",
-            Units: "command/second",
-        },
-        &Metrica{
-            DataKey: "command_keywords",
-            Name: "Command keywords",
-            Units: "command/second",
-        },
-        &Metrica{
-            DataKey: "command_persist",
-            Name: "Command persist",
-            Units: "command/second",
-        },
-        &Metrica{
-            DataKey: "command_flushattrs",
-            Name: "Command flushattrs",
-            Units: "command/second",
-        },
-    }
-    for _, m := range metricas {
-        m.DataSource = dataSource
-        component.AddMetrica(m)
-    }
+	metricas := []*Metrica{
+		&Metrica{
+			DataKey: "queries",
+			Name:    "Queries",
+			Units:   "Queries/second",
+		},
+		&Metrica{
+			DataKey: "connections",
+			Name:    "Connections",
+			Units:   "connections/second",
+		},
+		&Metrica{
+			DataKey: "maxed_out",
+			Name:    "Maxed out",
+			Units:   "connections/second",
+		},
+		&Metrica{
+			DataKey: "command_search",
+			Name:    "Command search",
+			Units:   "command/second",
+		},
+		&Metrica{
+			DataKey: "command_excerpt",
+			Name:    "Command excerpt",
+			Units:   "command/second",
+		},
+		&Metrica{
+			DataKey: "command_update",
+			Name:    "Command update",
+			Units:   "command/second",
+		},
+		&Metrica{
+			DataKey: "command_keywords",
+			Name:    "Command keywords",
+			Units:   "command/second",
+		},
+		&Metrica{
+			DataKey: "command_persist",
+			Name:    "Command persist",
+			Units:   "command/second",
+		},
+		&Metrica{
+			DataKey: "command_flushattrs",
+			Name:    "Command flushattrs",
+			Units:   "command/second",
+		},
+	}
+	for _, m := range metricas {
+		m.DataSource = dataSource
+		component.AddMetrica(m)
+	}
+
+	avgQueryWallTime := &AvgMetrica{
+		Metrica{
+			DataKey: "avg_query_wall",
+			Name:    "Avg Query Wall Time",
+			Units:   "milisecond",
+		},
+	}
+	avgQueryWallTime.DataSource = dataSource
+	component.AddMetrica(avgQueryWallTime)
 }
 
 func main() {
-        plugin := newrelic_platform_go.NewNewrelicPlugin("0.0.1", "7bceac019c7dcafae1ef95be3e3a3ff8866de246", 60)
-        component := newrelic_platform_go.NewPluginComponent("Sphinx component", "com.github.yvasiyarov.Sphinx")
-        plugin.AddComponent(component)
+	plugin := newrelic_platform_go.NewNewrelicPlugin("0.0.1", "7bceac019c7dcafae1ef95be3e3a3ff8866de246", 60)
+	component := newrelic_platform_go.NewPluginComponent("Sphinx component", "com.github.yvasiyarov.Sphinx")
+	plugin.AddComponent(component)
 
 	ds := NewMetricsDataSource("web-d5.butik.ru", 0, 0)
-        AddMetrcas(component, ds)
+	AddMetrcas(component, ds)
 
-        plugin.Verbose = true
-  
-        plugin.Run()
-        //plugin.Harvest()
+	plugin.Verbose = true
+
+	plugin.Run()
+	//plugin.Harvest()
 }
