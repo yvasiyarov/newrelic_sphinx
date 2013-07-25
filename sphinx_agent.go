@@ -89,6 +89,7 @@ func (ds *MetricsDataSource) CheckAndUpdateData() error {
                 ds.PreviousData = ds.LastData
             }
             ds.LastData = newData
+            ds.LastUpdateTime = startTime
         }
 
         // check uptime
@@ -145,28 +146,55 @@ func (metrica *Metrica) GetValue() (float64, error) {
 }
 
 func AddMetrcas(component newrelic_platform_go.IComponent, dataSource *MetricsDataSource) {
-    keys := []string{
-       "connections", "maxed_out", "command_search", "command_excerpt", "command_update", "command_keywords",
-       "command_persist", "command_status", "command_flushattrs", "agent_connect", "agent_retry", "queries", 
-       "dist_queries", "query_wall", "query_cpu", "dist_wall", "dist_local", "dist_wait", "query_reads", 
-       "query_readkb", "query_readtime", "avg_query_wall", "avg_query_cpu", "avg_dist_wall", "avg_dist_local", 
-       "avg_dist_wait", "avg_query_reads", "avg_query_readkb", "avg_query_readtime",
+    metricas := []*Metrica{
+        &Metrica{
+            DataKey: "queries",
+            Name: "Queries",
+            Units: "Queries/second",
+        },
+        &Metrica{
+            DataKey: "connections",
+            Name: "Connections",
+            Units: "connections/second",
+        },
+        &Metrica{
+            DataKey: "maxed_out",
+            Name: "Maxed out",
+            Units: "connections/second",
+        },
+        &Metrica{
+            DataKey: "command_search",
+            Name: "Command search",
+            Units: "command/second",
+        },
+        &Metrica{
+            DataKey: "command_excerpt",
+            Name: "Command excerpt",
+            Units: "command/second",
+        },
+        &Metrica{
+            DataKey: "command_update",
+            Name: "Command update",
+            Units: "command/second",
+        },
+        &Metrica{
+            DataKey: "command_keywords",
+            Name: "Command keywords",
+            Units: "command/second",
+        },
+        &Metrica{
+            DataKey: "command_persist",
+            Name: "Command persist",
+            Units: "command/second",
+        },
+        &Metrica{
+            DataKey: "command_flushattrs",
+            Name: "Command flushattrs",
+            Units: "command/second",
+        },
     }
-
-    names := []string{
-       "Connections", "Maxed out", "Command search", "Command excerpt", "Command update", "Command keywords",
-       "Command persist", "Command status", "Command flushattrs", "Agent connect", "Agent retry", "Queries", 
-       "Dist queries", "Query wall", "Query cpu", "Dist wall", "Dist local", "Dist wait", "Query reads", 
-       "Query readkb", "Query readtime", "Avg query wall", "Avg query cpu", "Avg dist wall", "Avg dist local", 
-       "Avg dist wait", "Avg query reads", "Avg query readkb", "Avg query readtime",
-    }
-    for i, key := range keys {
-        m := &Metrica{
-            DataKey: key,
-            Name: names[i],
-            Units: "val/second",
-            DataSource: dataSource,
-        }
+    for _, m := range metricas {
+        m.DataSource = dataSource
         component.AddMetrica(m)
     }
 }
@@ -178,7 +206,9 @@ func main() {
 
 	ds := NewMetricsDataSource("web-d5.butik.ru", 0, 0)
         AddMetrcas(component, ds)
-        
-        plugin.Harvest()
-        plugin.Harvest()
+
+        plugin.Verbose = true
+  
+        plugin.Run()
+        //plugin.Harvest()
 }
