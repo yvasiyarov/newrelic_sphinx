@@ -6,10 +6,22 @@ import (
 	"github.com/yvasiyarov/newrelic_platform_go"
 	"strconv"
 	"time"
+        "flag"
+        "log"
 )
 
+var sphinxPort = flag.Int("sphinx-port", 9312, "Sphinx port")
+var sphinxHost = flag.String("sphinx-host", "127.0.0.1", "Sphinx host")
+var newrelicLicense = flag.String("newrelic-license", "", "Newrelic license")
+
 const (
-	MIN_PAUSE_TIME = 30
+	MIN_PAUSE_TIME = 30           //do not query sphinx often than once in 30 seconds
+        SPHINX_CONNECTION_TIMEOUT = 0 //no timeout
+        NEWRELIC_POLL_INTERVAL = 60   //Send data to newrelic every 60 seconds
+        
+        COMPONENT_NAME = "Sphinx"
+        AGENT_GUID = "com.github.yvasiyarov.Sphinx"
+        AGENT_VERSION = "0.0.1"
 )
 
 type SphinxStatusData map[string]string
@@ -24,9 +36,6 @@ type MetricsDataSource struct {
 }
 
 func NewMetricsDataSource(sphinxHost string, port int, connectionTimeout int) *MetricsDataSource {
-	if port == 0 {
-		port = 9312
-	}
 	ds := &MetricsDataSource{
 		SphinxHost:        sphinxHost,
 		Port:              port,
@@ -230,15 +239,18 @@ func AddMetrcas(component newrelic_platform_go.IComponent, dataSource *MetricsDa
 }
 
 func main() {
-	plugin := newrelic_platform_go.NewNewrelicPlugin("0.0.1", "7bceac019c7dcafae1ef95be3e3a3ff8866de246", 60)
-	component := newrelic_platform_go.NewPluginComponent("Sphinx component", "com.github.yvasiyarov.Sphinx")
+        flag.Parse()
+        if *newrelicLicense == "" {
+            log.Fatalf("Please, pass a valid newrelic license key\n")
+        }
+
+	plugin := newrelic_platform_go.NewNewrelicPlugin(AGENT_VERSION, *newrelicLicense, NEWRELIC_POLL_INTERVAL)
+	component := newrelic_platform_go.NewPluginComponent(COMPONENT_NAME, AGENT_GUID)
 	plugin.AddComponent(component)
 
-	ds := NewMetricsDataSource("web-d5.butik.ru", 0, 0)
+	ds := NewMetricsDataSource(*sphinxHost, *sphinxPort, SPHINX_CONNECTION_TIMEOUT)
 	AddMetrcas(component, ds)
 
 	plugin.Verbose = true
-
 	plugin.Run()
-	//plugin.Harvest()
 }
