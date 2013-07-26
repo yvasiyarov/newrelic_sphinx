@@ -12,7 +12,10 @@ import (
 
 var sphinxPort = flag.Int("sphinx-port", 9312, "Sphinx port")
 var sphinxHost = flag.String("sphinx-host", "127.0.0.1", "Sphinx host")
+
 var newrelicLicense = flag.String("newrelic-license", "", "Newrelic license")
+
+var verbose = flag.Bool("verbose", false, "Verbose mode")
 
 const (
 	MIN_PAUSE_TIME = 30           //do not query sphinx often than once in 30 seconds
@@ -241,7 +244,7 @@ func AddMetrcas(component newrelic_platform_go.IComponent, dataSource *MetricsDa
 func main() {
         flag.Parse()
         if *newrelicLicense == "" {
-            log.Fatalf("Please, pass a valid newrelic license key\n")
+            log.Fatalf("Please, pass a valid newrelic license key.\n Use --help to get more information about available options\n")
         }
 
 	plugin := newrelic_platform_go.NewNewrelicPlugin(AGENT_VERSION, *newrelicLicense, NEWRELIC_POLL_INTERVAL)
@@ -251,6 +254,6 @@ func main() {
 	ds := NewMetricsDataSource(*sphinxHost, *sphinxPort, SPHINX_CONNECTION_TIMEOUT)
 	AddMetrcas(component, ds)
 
-	plugin.Verbose = true
+	plugin.Verbose = *verbose
 	plugin.Run()
 }
