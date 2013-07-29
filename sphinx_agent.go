@@ -1,13 +1,13 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/yunge/sphinx"
 	"github.com/yvasiyarov/newrelic_platform_go"
+	"log"
 	"strconv"
 	"time"
-        "flag"
-        "log"
 )
 
 var sphinxPort = flag.Int("sphinx-port", 9312, "Sphinx port")
@@ -18,13 +18,13 @@ var newrelicLicense = flag.String("newrelic-license", "", "Newrelic license")
 var verbose = flag.Bool("verbose", false, "Verbose mode")
 
 const (
-	MIN_PAUSE_TIME = 30           //do not query sphinx often than once in 30 seconds
-        SPHINX_CONNECTION_TIMEOUT = 0 //no timeout
-        NEWRELIC_POLL_INTERVAL = 60   //Send data to newrelic every 60 seconds
-        
-        COMPONENT_NAME = "Sphinx"
-        AGENT_GUID = "com.github.yvasiyarov.Sphinx"
-        AGENT_VERSION = "0.0.1"
+	MIN_PAUSE_TIME            = 30 //do not query sphinx often than once in 30 seconds
+	SPHINX_CONNECTION_TIMEOUT = 0  //no timeout
+	NEWRELIC_POLL_INTERVAL    = 60 //Send data to newrelic every 60 seconds
+
+	COMPONENT_NAME = "Sphinx"
+	AGENT_GUID     = "com.github.yvasiyarov.Sphinx"
+	AGENT_VERSION  = "0.0.1"
 )
 
 type SphinxStatusData map[string]string
@@ -242,10 +242,10 @@ func AddMetrcas(component newrelic_platform_go.IComponent, dataSource *MetricsDa
 }
 
 func main() {
-        flag.Parse()
-        if *newrelicLicense == "" {
-            log.Fatalf("Please, pass a valid newrelic license key.\n Use --help to get more information about available options\n")
-        }
+	flag.Parse()
+	if *newrelicLicense == "" {
+		log.Fatalf("Please, pass a valid newrelic license key.\n Use --help to get more information about available options\n")
+	}
 
 	plugin := newrelic_platform_go.NewNewrelicPlugin(AGENT_VERSION, *newrelicLicense, NEWRELIC_POLL_INTERVAL)
 	component := newrelic_platform_go.NewPluginComponent(COMPONENT_NAME, AGENT_GUID)
