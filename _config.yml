@@ -1,0 +1,9 @@
+permalink: none
+relative_permalinks: false
+
+markdown: rdiscount
+
+#github default
+safe: true
+lsi: false
+pygments: true
