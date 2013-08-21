@@ -1,56 +1,23 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+{% include header.html %}
+    <h1>
+    <a name="newrelic-agent-for-sphinx-search-engine-" class="anchor" href="#newrelic-agent-for-sphinx-search-engine-"><span class="octicon octicon-link"></span></a>Newrelic agent for Sphinx search engine </h1>
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <p><a href="https://travis-ci.org/yvasiyarov/newrelic_sphinx"><img src="https://travis-ci.org/yvasiyarov/newrelic_sphinx.png" alt="Build Status"></a></p>
 
-    <title>Newrelic sphinx by yvasiyarov</title>
-  </head>
+    <h2>
+    <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-  <body>
+    <p>If you have not Go compiler in your system:<br><code>sudo apt-get install golang</code>  </p>
 
-    <header>
-      <div class="container">
-        <h1>Newrelic sphinx</h1>
-        <h2>Sphinx monitoring plugin for NewRelic</h2>
+    <p>Install dependencies:<br><code>sudo go get github.com/yunge/sphinx   
+    sudo go get github.com/yvasiyarov/newrelic_platform_go</code>   </p>
 
-        <section id="downloads">
-          <a href="https://github.com/yvasiyarov/newrelic_sphinx/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/yvasiyarov/newrelic_sphinx/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/yvasiyarov/newrelic_sphinx" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+    <p>Get and build agent:<br><code>git clone https://github.com/yvasiyarov/newrelic_sphinx.git   
+    cd newrelic_sphinx   
+    go build -o sphinx_agent</code>   </p>
 
-    <div class="container">
-      <section id="main_content">
-        <h1>
-<a name="newrelic-agent-for-sphinx-search-engine-" class="anchor" href="#newrelic-agent-for-sphinx-search-engine-"><span class="octicon octicon-link"></span></a>Newrelic agent for Sphinx search engine </h1>
+    <p>Run agent in debug mode:<br><code>./sphinx_agent --verbose=true --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>   </p>
 
-<p><a href="https://travis-ci.org/yvasiyarov/newrelic_sphinx"><img src="https://travis-ci.org/yvasiyarov/newrelic_sphinx.png" alt="Build Status"></a></p>
-
-<h2>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
-
-<p>If you have not Go compiler in your system:<br><code>sudo apt-get install golang</code>  </p>
-
-<p>Install dependencies:<br><code>sudo go get github.com/yunge/sphinx   
-sudo go get github.com/yvasiyarov/newrelic_platform_go</code>   </p>
-
-<p>Get and build agent:<br><code>git clone https://github.com/yvasiyarov/newrelic_sphinx.git   
-cd newrelic_sphinx   
-go build -o sphinx_agent</code>   </p>
-
-<p>Run agent in debug mode:<br><code>./sphinx_agent --verbose=true --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>   </p>
-
-<p>In production mode you can run it with nohup:<br><code>nohup ./sphinx_agent --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>  </p>
-      </section>
-    </div>
-
+    <p>In production mode you can run it with nohup:<br><code>nohup ./sphinx_agent --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>  </p>
+{% include footer.html %}
     
-  </body>
-</html>
