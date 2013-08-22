@@ -1,3 +1,33 @@
+<h2>
+    <a name="installation" class="anchor" href="#installation">
+        <span class="octicon octicon-link"></span>
+    </a>
+    NewRelic Sphinx Plugin Installation
+</h2>
+
+<p>If you have not Go compiler in your system:<br>
+In Debin/Ubuntu:
+<code>sudo apt-get install golang</code>  
+For other systems, please, follow <a href="http://golang.org/doc/install">http://golang.org/doc/install</a> 
+
+</p>
+
+<p>Install dependencies:<br><code>sudo go get github.com/yunge/sphinx   
+sudo go get github.com/yvasiyarov/newrelic_platform_go</code>   </p>
+
+<p>Get and build agent:<br>
+    <code>
+        git clone https://github.com/yvasiyarov/newrelic_sphinx.git   
+        cd newrelic_sphinx   
+        go build -o sphinx_agent
+    </code>
+</p>
+
+<p>Run agent in debug mode:<br><code>./sphinx_agent --verbose=true --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>   </p>
+
+<p>In production mode you can run it with nohup:<br><code>nohup ./sphinx_agent --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>  </p>
+
+
 
 1.Plugin requirements
 Requirements or dependencies; for example:
