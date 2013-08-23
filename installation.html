@@ -48,7 +48,8 @@
     ./sphinx_agent --verbose=true --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>   </p>
 {% endhighlight %}
         Please, don't forget to replace <b>[your newrelic license key]</b>
-        with your NewRelic license key and Sphinx host and port with real connection credentials
+        with your NewRelic license key and Sphinx host and port with real connection credentials<br/>
+        Please, note what for most of metrics Sphinx provide only incremented counters, not the real values so at first harvest most of metrics will be empty.
     </li>
     <li>
         Run agent in production mode:<br/>

@@ -1,11 +1,44 @@
-1. Configuration
-Instructions to configure the plugin, expected format, and how to set them. Include how to find the user's New Relic license key: From the New Relic title bar, select (account name) > Account settings. (For example, include a hyperlink to https://newrelic.com/docs/subscriptions/license-key.)
+---
 
-2. Troubleshooting
-Include instructions as applicable; for example:
+---
+{% include header.html %}
+<h2>
+    <a name="installation" class="anchor" href="#requirements">
+        <span class="octicon octicon-link"></span>
+    </a>
+    NewRelic Sphinx Plugin Configuration
+</h2>
+<p>
+    NewRelic Sphinx Plugin does not has any special configuration file, so you should pass all settings as command line arguments.
+    It support the following configuration parameters:
+</p>
+<ul>
+    <li>
+        <b>sphinx-host</b> - IP or hostname of sphinx server. Default value is 127.0.0.1
+    </li>
+    <li>
+        <b>sphinx-port</b> - TCP port, sphinx server listen at. Default value is 9312
+    </li>
+    <li>
+        <b>newrelic-license</b> - NewRelic license key. It has not default value.
+    </li>
+    <li>
+        <b>verbose</b> - turn on verbose mode. Default value false. In verbose mode plugin print out all packages, sent to newrelic server.
+        Don't use this flag in production.
+    </li>
+</ul>
 
-How to resolve common problems: Unable to connect to New Relic, unable to connnect to the monitored server, incorrect license key
-How to enable logging and/or verbose logging
-How to restart the plugin
-How to test connectivity to New Relic
-How to handle errors; for example, failure to read, aggregate, or send data
+<h2>
+    <a name="installation" class="anchor" href="#requirements">
+        <span class="octicon octicon-link"></span>
+    </a>
+    NewRelic Sphinx Plugin Troubleshooting
+</h2>
+<p> If plugin does not work as you expected, please, follow this steps:</p>
+<ol>
+    <li>Check what server, where plugin is run can connect to NewRelic servers</li>
+    <li>Check what its possible to connect to your Sphinx server from the server where agent is run.</li>
+    <li>Run NewRelic Sphinx Plugin in debug mode(verbose=true) and check what metrics is collected and sent to NewRelic</li>
+    <li>If something goes wrong, please, open issue at <a href="https://github.com/yvasiyarov/newrelic_sphinx/issues">github</a></li>
+</ol>
+{% include footer.html %}
