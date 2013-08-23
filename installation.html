@@ -1,46 +1,60 @@
+---
+
+---
+{% include header.html %}
+<h2>
+    <a name="installation" class="anchor" href="#requirements">
+        <span class="octicon octicon-link"></span>
+    </a>
+    NewRelic Sphinx Plugin Requirements
+</h2>
+<p>
+    NewRelic Sphinx Plugin is distributed as Go package, and it requires Go compiler version 1.0 or newer.
+    This requirements can be lifted in a future, when binary packages will be available.
+    NewRelic plugin and Sphinx engine does not have to be installed on the same server, but NewRelic
+    plugin should be able to connect to Sphinx server from the server where its run.
+</p>
+
 <h2>
     <a name="installation" class="anchor" href="#installation">
         <span class="octicon octicon-link"></span>
     </a>
     NewRelic Sphinx Plugin Installation
 </h2>
-
-<p>If you have not Go compiler in your system:<br>
-In Debin/Ubuntu:
-<code>sudo apt-get install golang</code>  
-For other systems, please, follow <a href="http://golang.org/doc/install">http://golang.org/doc/install</a> 
-
-</p>
-
-<p>Install dependencies:<br><code>sudo go get github.com/yunge/sphinx   
-sudo go get github.com/yvasiyarov/newrelic_platform_go</code>   </p>
-
-<p>Get and build agent:<br>
-    <code>
-        git clone https://github.com/yvasiyarov/newrelic_sphinx.git   
-        cd newrelic_sphinx   
-        go build -o sphinx_agent
-    </code>
-</p>
-
-<p>Run agent in debug mode:<br><code>./sphinx_agent --verbose=true --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>   </p>
-
-<p>In production mode you can run it with nohup:<br><code>nohup ./sphinx_agent --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>  </p>
-
-
-
-1.Plugin requirements
-Requirements or dependencies; for example:
-
-New Relic subscription level: Any (If your plugin agent requires specific permissions levels from the components (instances) it monitors, be sure to document that.)
-Internet access via SSL (HTTPS)
-Supported operating systems
-Minimum environment requirements (Java, Ruby, glibc, etc.)
-Supported monitored systems
-Any known limitations
-
-2. Installation
-Step-by-step procedures to obtain and install the plugin.
-
-Note: Do not require "su" or "sudo" permission in order to install your agent or support software unless absolutely required. These requirements must be limited in scope and well documented. For more information, see Plugin security.
-
+<ol>
+    <li>NewRelic Sphinx Plugin is distributed as Go package, so in order to install it you will need install Go compiler first.
+        Go compiler installation:<br/>
+        For Debian/Ubuntu you can install it from the package:<br/>
+        <code>sudo apt-get install golang</code><br/>
+        For other operating systems please follow <a href="http://golang.org/doc/install">http://golang.org/doc/install</a>
+    </li>
+    <li>Install dependencies:<br/>
+{% highlight bash %}
+    sudo go get github.com/yunge/sphinx
+    sudo go get github.com/yvasiyarov/newrelic_platform_go
+{% endhighlight %}
+    </li>
+    <li>Get and build NewRelic agent:<br>
+{% highlight bash %}
+    git clone https://github.com/yvasiyarov/newrelic_sphinx.git
+    cd newrelic_sphinx
+    go build -o sphinx_agent
+{% endhighlight %}
+    </li>
+    <li>
+        Checking agent:<br/>
+        First time you should run agent in debug mode - just to make sure what all metrics is collected and sent to NewRelic:<br/>
+{% highlight bash %}
+    ./sphinx_agent --verbose=true --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>   </p>
+{% endhighlight %}
+        Please, don't forget to replace <b>[your newrelic license key]</b>
+        with your NewRelic license key and Sphinx host and port with real connection credentials
+    </li>
+    <li>
+        Run agent in production mode:<br/>
+{% highlight bash %}
+    nohup ./sphinx_agent --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]
+{% endhighlight %}
+    </li>
+</ol>
+{% include footer.html %}

@@ -3,37 +3,41 @@
 ---
 {% include header.html %}
 
-The Sphinx plugin displays a lot of different metrics, exported by Sphinx Search engine.
+<p>The Sphinx plugin displays a lot of different metrics, exported by Sphinx Search engine.
 It support Sphinx version  0.9.9-rc2 and above.
 Currently its available as Go package, but deb and rpm packages is coming soon.
-
 After installation you will be able to see Sphinx as an component in NewRelic:
-<a href="/images/screens/sphinx_search_component.png" data-lightbox="sphinx_search_component" title="Sphinx Search Component">
-    <img src="/images/screens/sphinx_search_component.png" />
+</p>
+<a href="/images/screens/sphinx_search_component.png" data-lightbox="sphinx_search_component" title="Sphinx NewRelic Plugin">
+    <img src="/images/screens/sphinx_search_component.png"  title="Sphinx NewRelic Plugin" />
 </a>
+<p>
 On this screen you will be able to see two summary metrics, introduced by this plugin:
-1. Number of requests per second processed by Sphinx
-2. Number of aborted connections
-
+<ol>
+    <li>Number of requests per second processed by Sphinx</li>
+    <li>Number of aborted connections</li>
+</ol>
 You will be able to setup NewRelic Alerts based on this metrics, to see if some of connection attempts was aborted
 by Sphinx or amount of requests per minute goes through the roof.
 
 If you click on the component's name, you will be able to see more detail information about this metrics:
-<a href="/images/screens/sphinx_search_overview.png" data-lightbox="sphinx_search_overview" title="Sphinx Search Overview">
-    <img src="/images/screens/sphinx_search_overview.png" />
+</p>
+<a href="/images/screens/sphinx_search_overview.png" data-lightbox="sphinx_search_overview" title="Sphinx NewRelic Plugin">
+    <img src="/images/screens/sphinx_search_overview.png"  title="Sphinx NewRelic Plugin" />
 </a>
-First graph displayed number of request per minute, processed by Sphinx and number of connections  per minute.
+<p>First graph displayed number of request per minute, processed by Sphinx and number of connections  per minute.
 The second graph displayed average number of millisecond spended for processing of one request.
-
-<a href="/images/screens/sphinx_search_commands.png" data-lightbox="sphinx_search_commands" title="Sphinx Search Commands">
-    <img src="/images/screens/sphinx_search_commands.png" />
+</p>
+<a href="/images/screens/sphinx_search_commands.png" data-lightbox="sphinx_search_commands" title="Sphinx NewRelic Plugin">
+    <img src="/images/screens/sphinx_search_commands.png"  title="Sphinx NewRelic Plugin" />
 </a>
+<p>
 On the second tab you can see number of internal sphinx commands, processed per minute.
 In this installation we don't use Sphinx's RT indexes, so all graphs except "Search commands" is empty.
-
-<a href="/images/screens/sphinx_search_errors.png" data-lightbox="sphinx_search_errors" title="Sphinx Search Errors">
-    <img src="/images/screens/sphinx_search_errors.png" />
+</p>
+<a href="/images/screens/sphinx_search_errors.png" data-lightbox="sphinx_search_errors" title="Sphinx NewRelic Plugin">
+    <img src="/images/screens/sphinx_search_errors.png"  title="Sphinx NewRelic Plugin" />
 </a>
 On the last graph you can see number of connections, aborted by Sphinx. I hope it will be always empty in your server :-)
-        
+
 {% include footer.html %}
