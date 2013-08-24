@@ -1,7 +1,7 @@
 permalink: none
 relative_permalinks: false
 
-base_url: http://newrelic-sphinx.com/
+base_url: //newrelic-sphinx.com/
 
 markdown: rdiscount
 
