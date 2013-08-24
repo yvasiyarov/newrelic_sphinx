@@ -256,3 +256,14 @@ ul.menu li {
 ul.menu li:before {
     margin-left: 0px;
 }
+div.footer {
+    margin: 0 auto;
+    width: 70%;
+    max-width: 500px;
+}
+div.copyright {
+    margin: 0 auto;
+    font-size: 12px;
+    width: 70%;
+    max-width: 200px;
+}
