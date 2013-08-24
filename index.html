@@ -3,31 +3,27 @@
 ---
 {% include header.html %}
 
-TODO: Descriptive title; for example, "Wikipedia plugin for New Relic."
-TODO: List of main topics with anchors to each section.
-    <h1>
-      <a name="newrelic-agent-for-sphinx-search-engine-" class="anchor" href="#newrelic-agent-for-sphinx-search-engine-">
-        <span class="octicon octicon-link"></span>
-      </a>
-      Newrelic Sphinx Plugin
-    </h1>
+<h1>
+  <a name="newrelic-agent-for-sphinx-search-engine-" class="anchor" href="#newrelic-agent-for-sphinx-search-engine-">
+    <span class="octicon octicon-link"></span>
+  </a>
+  Newrelic Sphinx Plugin
+</h1>
 
-    <p><a href="https://travis-ci.org/yvasiyarov/newrelic_sphinx"><img src="https://travis-ci.org/yvasiyarov/newrelic_sphinx.png" alt="Build Status"></a></p>
-
-    <h2>
-    <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
-
-    <p>If you have not Go compiler in your system:<br><code>sudo apt-get install golang</code>  </p>
-
-    <p>Install dependencies:<br><code>sudo go get github.com/yunge/sphinx   
-    sudo go get github.com/yvasiyarov/newrelic_platform_go</code>   </p>
-
-    <p>Get and build agent:<br><code>git clone https://github.com/yvasiyarov/newrelic_sphinx.git   
-    cd newrelic_sphinx   
-    go build -o sphinx_agent</code>   </p>
-
-    <p>Run agent in debug mode:<br><code>./sphinx_agent --verbose=true --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>   </p>
-
-    <p>In production mode you can run it with nohup:<br><code>nohup ./sphinx_agent --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]</code>  </p>
+<p><a href="https://travis-ci.org/yvasiyarov/newrelic_sphinx"><img src="https://travis-ci.org/yvasiyarov/newrelic_sphinx.png" alt="Build Status"></a></p>
+<p>
+  Trend and monitor Sphinx Search server statistics using the Newrelic Sphinx plugin.
+  The Newrelic Sphinx plugin agent polls numerous metrics, exported by Sphxin and submits the results to the New Relic platform.
+</p>
+<ul>
+  <li><a href="/about.html#description">NewRelic Sphinx plugin description</a></li>
+  <li><a href="/installation.html#requirements">NewRelic Sphinx plugin requirements</a></li>
+  <li><a href="/installation.html#installation">NewRelic Sphinx plugin installation</a></li>
+  <li><a href="/installation.html#configuration">NewRelic Sphinx plugin configuration</a></li>
+  <li><a href="/installation.html#troubleshooting">NewRelic Sphinx plugin troubleshooting</a></li>
+  <li><a href="/uninstallation.html#uninstallation">NewRelic Sphinx plugin uninstallation</a></li>
+  <li><a href="/metrics.html#metrics">NewRelic Sphinx plugin metrics</a></li>
+  <li><a href="/uninstallation.html#support">NewRelic Sphinx plugin support</a></li>
+</ul>
 {% include footer.html %}
     
