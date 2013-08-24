@@ -1,6 +1,8 @@
 permalink: none
 relative_permalinks: false
 
+base_url: http://newrelic-sphinx.com/
+
 markdown: rdiscount
 
 #github default
