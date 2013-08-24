@@ -9,22 +9,32 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="{{site.base_url}}javascripts/lightbox-2.6.min.js"></script>
     <link href="{{site.base_url}}stylesheets/lightbox.css" rel="stylesheet" />
-    <title>Newrelic Sphinx Plugin</title>
+    <title>New Relic Sphinx Plugin</title>
   </head>
 
   <body>
 
     <header>
       <div class="container">
-        <h1>Newrelic Sphinx</h1>
-        <h2>Sphinx monitoring plugin for NewRelic</h2>
+        <h1 onclick="location.assign('{{site.base_url}}index.html')">
+            New Relic Sphinx
+            <a href="https://travis-ci.org/yvasiyarov/newrelic_sphinx"><img src="https://travis-ci.org/yvasiyarov/newrelic_sphinx.png" alt="Build Status"></a>
+        </h1>
+        <h2>Sphinx monitoring plugin for New Relic</h2>
 
         <section id="downloads">
           <a href="https://github.com/yvasiyarov/newrelic_sphinx/zipball/master" class="btn">Download as .zip</a>
           <a href="https://github.com/yvasiyarov/newrelic_sphinx/tarball/master" class="btn">Download as .tar.gz</a>
           <a href="https://github.com/yvasiyarov/newrelic_sphinx" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-          <a href="https://travis-ci.org/yvasiyarov/newrelic_sphinx"><img src="https://travis-ci.org/yvasiyarov/newrelic_sphinx.png" alt="Build Status"></a>
         </section>
+        <ul class="menu">
+            <li><a href="{{site.base_url}}index.html">Home</a></li>
+            <li><a href="{{site.base_url}}about.html">Description</a></li>
+            <li><a href="{{site.base_url}}installation.html">Installation</a></li>
+            <li><a href="{{site.base_url}}configuration.html">Configuration</a></li>
+            <li><a href="{{site.base_url}}metrics.html">Metrics</a></li>
+            <li><a href="{{site.base_url}}uninstallation.html#support">Support</a></li>
+        </ul>
       </div>
     </header>
     <div class="container">
