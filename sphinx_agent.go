@@ -9,6 +9,8 @@ import (
 var sphinxPort = flag.Int("sphinx-port", 9312, "Sphinx port")
 var sphinxHost = flag.String("sphinx-host", "127.0.0.1", "Sphinx host")
 
+var newrelicName = flag.String("newrelic-name", "Sphinx", "Name in Sphinx")
+
 var newrelicLicense = flag.String("newrelic-license", "", "Newrelic license")
 
 var verbose = flag.Bool("verbose", false, "Verbose mode")
@@ -18,7 +20,6 @@ const (
 	SPHINX_CONNECTION_TIMEOUT = 0  //no timeout
 	NEWRELIC_POLL_INTERVAL    = 60 //Send data to newrelic every 60 seconds
 
-	COMPONENT_NAME = "Sphinx"
 	AGENT_GUID     = "com.github.yvasiyarov.Sphinx"
 	AGENT_VERSION  = "0.0.2"
 )
@@ -53,7 +54,7 @@ func main() {
 	}
 
 	plugin := newrelic_platform_go.NewNewrelicPlugin(AGENT_VERSION, *newrelicLicense, NEWRELIC_POLL_INTERVAL)
-	component := newrelic_platform_go.NewPluginComponent(COMPONENT_NAME, AGENT_GUID)
+	component := newrelic_platform_go.NewPluginComponent(*newrelicName, AGENT_GUID)
 	plugin.AddComponent(component)
 
 	ds := NewMetricsDataSource(*sphinxHost, *sphinxPort, SPHINX_CONNECTION_TIMEOUT)
