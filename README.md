@@ -24,3 +24,6 @@ Run agent in debug mode:
 In production mode you can run it with nohup:  
 `nohup ./sphinx_agent --sphinx-host=127.0.0.1 --sphinx-port=9312 --newrelic-license=[your newrelic license key]`  
 
+If you run several Sphinx instances, you can pass instance name in newrelic-name argument:
+`--newrelic-name "sphinx01.application.com"`
+
