@@ -20,8 +20,8 @@ const (
 	SPHINX_CONNECTION_TIMEOUT = 0  //no timeout
 	NEWRELIC_POLL_INTERVAL    = 60 //Send data to newrelic every 60 seconds
 
-	AGENT_GUID     = "com.github.yvasiyarov.Sphinx"
-	AGENT_VERSION  = "0.0.2"
+	AGENT_GUID    = "com.github.yvasiyarov.Sphinx"
+	AGENT_VERSION = "0.0.2"
 )
 
 func addMetrcsToComponent(component newrelic_platform_go.IComponent, metrics []newrelic_platform_go.IMetrica) {
@@ -54,7 +54,7 @@ func main() {
 	}
 
 	plugin := newrelic_platform_go.NewNewrelicPlugin(AGENT_VERSION, *newrelicLicense, NEWRELIC_POLL_INTERVAL)
-	component := newrelic_platform_go.NewPluginComponent(*newrelicName, AGENT_GUID)
+	component := newrelic_platform_go.NewPluginComponent(*newrelicName, AGENT_GUID, *verbose)
 	plugin.AddComponent(component)
 
 	ds := NewMetricsDataSource(*sphinxHost, *sphinxPort, SPHINX_CONNECTION_TIMEOUT)
